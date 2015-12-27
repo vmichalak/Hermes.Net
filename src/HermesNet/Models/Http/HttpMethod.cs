@@ -9,6 +9,7 @@
 		DELETE,
 		CONNECT,
 		OPTIONS,
-		TRACE
+		TRACE,
+		ALL
 	}
 }

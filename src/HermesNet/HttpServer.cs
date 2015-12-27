@@ -20,15 +20,27 @@ namespace HermesNet
 		private readonly MiddlewareManager _middlewareManager = new MiddlewareManager();
 		private readonly StreamSocketListener _listener = new StreamSocketListener();
 
-		public void AddMiddleware(IMiddleware middleware) { this._middlewareManager.Add(middleware); }
+		//public void AddMiddleware(IMiddleware middleware) { this._middlewareManager.Add(middleware); }
 
-		public async void Run(int port)
+		public void AddAllRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.ALL, middleware); }
+		public void AddGetRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.GET, middleware); }
+		public void AddPostRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
+		public void AddPutRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
+		public void AddDeleteRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
+
+		public async void Listen(int port)
 		{
 			if (port < 0 || port > 65535) { throw new ArgumentOutOfRangeException(nameof(port)); }
 
 			this._listener.ConnectionReceived += ProcessRequestAsync;
 			await this._listener.BindServiceNameAsync(port.ToString());
 			Debug.WriteLine("HttpServer Started.");
+		}
+
+		public void Dispose()
+		{
+			this._listener.Dispose();
+			Debug.WriteLine("HttpServer Closed.");
 		}
 
 		private async void ProcessRequestAsync(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
@@ -61,8 +73,22 @@ namespace HermesNet
 			string[] inputSplitted = input.Split('\n');
 			string[] firstLine = inputSplitted[0].Split(' ');
 
-			HttpMethod method = (HttpMethod)Enum.Parse(typeof(HttpMethod), firstLine[0]);
+			HttpMethod method;
+			try
+			{
+				method = (HttpMethod) Enum.Parse(typeof (HttpMethod), firstLine[0]);
+			}
+			catch (ArgumentException)
+			{
+				method = HttpMethod.ALL;
+			}
+
 			string pathString = firstLine[1];
+			string baseUrl = pathString;
+			if (pathString.Contains('?'))
+			{
+				 baseUrl = baseUrl.Substring(0, baseUrl.IndexOf('?'));
+			}
 			Dictionary<string, List<string>> parameters = new Dictionary<string, List<string>>();
 			try
 			{
@@ -81,7 +107,7 @@ namespace HermesNet
 				// ignored
 			}
 
-			return new HttpRequest(host, pathString, parameters, method);
+			return new HttpRequest(host, pathString, baseUrl, parameters, method);
 		}
 
 		private async Task WriteResponseAsync(HttpResponse response, IOutputStream output)
@@ -103,10 +129,6 @@ namespace HermesNet
 			}
 		}
 
-		public void Dispose()
-		{
-			this._listener.Dispose();
-			Debug.WriteLine("HttpServer Closed.");
-		}
+		
 	}
 }

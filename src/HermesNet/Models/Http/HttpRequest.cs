@@ -18,6 +18,9 @@ namespace HermesNet.Models.Http
 		/// </summary>
 		public string PathString { get; }
 
+		//TODO: Doc
+		public string BaseUrl { get; }
+
 		/// <summary>
 		/// Gets all request parameters.
 		/// </summary>
@@ -28,10 +31,10 @@ namespace HermesNet.Models.Http
 		/// </summary>
 		public HttpMethod Method { get; }
 
-		public HttpRequest(string host, string pathString, Dictionary<string, List<string>> parameters, HttpMethod method)
+		public HttpRequest(string host, string pathString, string baseUrl, Dictionary<string, List<string>> parameters, HttpMethod method)
 		{
 			if (parameters == null) { throw new ArgumentNullException(nameof(parameters)); }
-
+			this.BaseUrl = baseUrl;
 			this.Host = host;
 			this.PathString = pathString;
 			this.Parameters = parameters;

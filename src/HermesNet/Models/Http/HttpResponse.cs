@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using Newtonsoft.Json;
 
 namespace HermesNet.Models.Http
 {
@@ -10,8 +8,7 @@ namespace HermesNet.Models.Http
 	/// </summary>
 	public class HttpResponse
 	{
-		private readonly Dictionary<string, object> _bodyObjects = new Dictionary<string, object>();
-		private HttpStatusCode _statusCode = HttpStatusCode.NotFound;
+		private HttpStatusCode _statusCode = HttpStatusCode.OK;
 
 		/// <summary>
 		/// Return the response end status.
@@ -41,19 +38,18 @@ namespace HermesNet.Models.Http
 		/// <summary>
 		/// Return Json string of the body.
 		/// </summary>
-		public string Body => JsonConvert.SerializeObject(_bodyObjects);
+		public string Body { get; private set; } = "";
 
 		/// <summary>
-		/// Add Content to the body
+		/// Send the content to the client.
 		/// </summary>
-		/// <param name="key">Name of the content</param>
-		/// <param name="value">Content</param>
-		public void AddToBody(string key, object value)
+		/// <param name="content"></param>
+		public void Send(string content)
 		{
 			if (!Ended)
 			{
-				this._bodyObjects.Add(key, value);
-				StatusCode = HttpStatusCode.OK;
+				this.Body = content;
+				this.End();
 			}
 			else
 			{
@@ -67,19 +63,6 @@ namespace HermesNet.Models.Http
 		public void End()
 		{
 			this.Ended = true;
-		}
-
-		/// <summary>
-		/// Close all modifications on Response for catching an Error.
-		/// </summary>
-		/// <param name="statusCode">HTTP Status Code of the error</param>
-		/// <param name="errorMessage">Error Message</param>
-		public void ErrorEnd(HttpStatusCode statusCode, string errorMessage)
-		{
-			this._bodyObjects.Clear();
-			this.AddToBody("message", errorMessage);
-			this.StatusCode = statusCode;
-			this.End();
 		}
 	}
 }

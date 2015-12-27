@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
+using Windows.Networking.Connectivity;
 using HermesNet.Models;
 using HermesNet.Models.Http;
 
@@ -6,24 +10,49 @@ namespace HermesNet.Helpers
 {
 	internal class MiddlewareManager
 	{
-		private readonly List<IMiddleware> _middlewares = new List<IMiddleware>();
-
-		public void Add(IMiddleware middleware)
+		private class Entry
 		{
-			this._middlewares.Add(middleware);
+			public HttpMethod Method { get; set; }
+			public string Route { get; set; }
+		}
+
+		private readonly Dictionary<Entry, IMiddleware> _middlewares = new Dictionary<Entry, IMiddleware>();
+
+		public void Add(string route, HttpMethod method, IMiddleware middleware)
+		{
+			this._middlewares.Add(new Entry() { Method = method, Route = route }, middleware);
 		}
 
 		public HttpResponse Execute(HttpRequest request)
 		{
 			HttpContext context = new HttpContext(request);
 
-			foreach (IMiddleware middleware in this._middlewares)
+			Entry searchEntry = new Entry()
+			{
+				Method = request.Method,
+				Route = request.BaseUrl
+			};
+
+			IMiddleware middleware = FilterMiddlewares(searchEntry);
+			if (middleware == null)
+			{
+				context.Response.StatusCode = HttpStatusCode.NotFound;
+			}
+			else
 			{
 				middleware.Run(context);
-				if (context.Response.Ended) { break; }
 			}
 
 			return context.Response;
+		}
+
+		private IMiddleware FilterMiddlewares(Entry searchEntry)
+		{
+			return this._middlewares.FirstOrDefault(m =>
+			{
+				Regex regex = new Regex(m.Key.Route);
+				return (m.Key.Method == HttpMethod.ALL || m.Key.Method == searchEntry.Method) && regex.IsMatch(searchEntry.Route);
+			}).Value;
 		}
 	}
 }
