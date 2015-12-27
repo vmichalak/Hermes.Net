@@ -21,7 +21,7 @@ namespace HermesNet.Models.Http
 		/// <summary>
 		/// Gets all request parameters.
 		/// </summary>
-		public Dictionary<string, List<string>> Parameters { get; }
+		public IReadOnlyDictionary<string, List<string>> Parameters { get; }
 
 		/// <summary>
 		/// Gets the HTTP Method used (post, get, options, ...)

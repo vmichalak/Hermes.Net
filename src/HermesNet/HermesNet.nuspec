@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>HermesNet</id>
+    <version>0.1.0-beta5</version>
+    <title>Hermes.Net</title>
+    <authors>Valentin Michalak</authors>
+    <owners>Valentin Michalak</owners>
+    <licenseUrl>https://github.com/vmichalak/Hermes.Net/blob/master/licence.md</licenseUrl>
+    <projectUrl>https://github.com/vmichalak/Hermes.Net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Light Web Server for UAP/UWP</description>
+    <copyright>Copyright 2015 Valentin Michalak</copyright>
+    <tags>Server Web UWP UAP</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.JSON" version="8.0.1-beta4" />
+    </dependencies>
+  </metadata>
+</package>

@@ -63,15 +63,23 @@ namespace HermesNet
 
 			HttpMethod method = (HttpMethod)Enum.Parse(typeof(HttpMethod), firstLine[0]);
 			string pathString = firstLine[1];
-			string[] parameterStrings = pathString.Substring(pathString.IndexOf('?') + 1).Split('&');
-			Dictionary<string, List<string>> parameters = parameterStrings
-				.Select(
-					str => str.Split('=')
-				)
-				.ToDictionary(
-					temp => temp[0],
-					temp => new List<string>() { temp[1] }
-				);
+			Dictionary<string, List<string>> parameters = new Dictionary<string, List<string>>();
+			try
+			{
+				string[] parameterStrings = pathString.Substring(pathString.IndexOf('?') + 1).Split('&');
+				parameters = parameterStrings
+					.Select(
+						str => str.Split('=')
+					)
+					.ToDictionary(
+						temp => temp[0],
+						temp => new List<string>() {temp[1] ?? ""}
+					);
+			}
+			catch
+			{
+				// ignored
+			}
 
 			return new HttpRequest(host, pathString, parameters, method);
 		}
