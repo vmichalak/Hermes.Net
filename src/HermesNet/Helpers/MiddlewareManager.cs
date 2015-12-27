@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Windows.Networking.Connectivity;
 using HermesNet.Models;
 using HermesNet.Models.Http;
@@ -23,7 +24,7 @@ namespace HermesNet.Helpers
 			this._middlewares.Add(new Entry() { Method = method, Route = route }, middleware);
 		}
 
-		public HttpResponse Execute(HttpRequest request)
+		public async Task<HttpResponse> Execute(HttpRequest request)
 		{
 			HttpContext context = new HttpContext(request);
 
@@ -40,7 +41,7 @@ namespace HermesNet.Helpers
 			}
 			else
 			{
-				middleware.Run(context);
+				await middleware.Run(context);
 			}
 
 			return context.Response;

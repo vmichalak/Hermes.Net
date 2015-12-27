@@ -1,4 +1,5 @@
-﻿using HermesNet.Models.Http;
+﻿using System.Threading.Tasks;
+using HermesNet.Models.Http;
 
 namespace HermesNet.Models
 {
@@ -8,6 +9,6 @@ namespace HermesNet.Models
 		/// Running method of the Middleware
 		/// </summary>
 		/// <param name="context">The current context</param>
-		void Run(HttpContext context);
+		Task Run(HttpContext context);
 	}
 }

@@ -104,12 +104,15 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="HermesNet.nuspec" />
+    <None Include="HermesNet.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\MiddlewareManager.cs" />
     <Compile Include="HttpServer.cs" />
+    <Compile Include="Middlewares\FolderMiddleware.cs" />
     <Compile Include="Models\Http\HttpContext.cs" />
     <Compile Include="Models\Http\HttpMethod.cs" />
     <Compile Include="Models\Http\HttpRequest.cs" />

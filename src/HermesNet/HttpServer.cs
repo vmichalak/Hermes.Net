@@ -7,8 +7,10 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using HermesNet.Helpers;
+using HermesNet.Middlewares;
 using HermesNet.Models;
 using HermesNet.Models.Http;
 
@@ -27,6 +29,8 @@ namespace HermesNet
 		public void AddPostRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
 		public void AddPutRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
 		public void AddDeleteRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
+
+		public void AddTransparentFolderRoute(string route, StorageFolder folder) { this._middlewareManager.Add(route, HttpMethod.GET, new FolderMiddleware(folder, route)); }
 
 		public async void Listen(int port)
 		{
@@ -59,8 +63,10 @@ namespace HermesNet
 				}
 			}
 
+			Debug.WriteLine("test 1");
 			HttpRequest request = ConvertInputStringToHttpRequest(requestStringBuilder.ToString(), args.Socket.Information.RemoteAddress.CanonicalName);
-			HttpResponse response = this._middlewareManager.Execute(request);
+			HttpResponse response = await this._middlewareManager.Execute(request);
+			Debug.WriteLine(response.Body.Length);
 
 			using (IOutputStream output = args.Socket.OutputStream)
 			{
@@ -85,26 +91,27 @@ namespace HermesNet
 
 			string pathString = firstLine[1];
 			string baseUrl = pathString;
+			Dictionary<string, List<string>> parameters = new Dictionary<string, List<string>>();
 			if (pathString.Contains('?'))
 			{
-				 baseUrl = baseUrl.Substring(0, baseUrl.IndexOf('?'));
-			}
-			Dictionary<string, List<string>> parameters = new Dictionary<string, List<string>>();
-			try
-			{
-				string[] parameterStrings = pathString.Substring(pathString.IndexOf('?') + 1).Split('&');
-				parameters = parameterStrings
-					.Select(
-						str => str.Split('=')
-					)
-					.ToDictionary(
-						temp => temp[0],
-						temp => new List<string>() {temp[1] ?? ""}
-					);
-			}
-			catch
-			{
-				// ignored
+				baseUrl = baseUrl.Substring(0, baseUrl.IndexOf('?'));
+				
+				try
+				{
+					string[] parameterStrings = pathString.Substring(pathString.IndexOf('?') + 1).Split('&');
+					parameters = parameterStrings
+						.Select(
+							str => str.Split('=')
+						)
+						.ToDictionary(
+							temp => temp[0],
+							temp => new List<string>() {temp[1] ?? ""}
+						);
+				}
+				catch
+				{
+					// ignored
+				}
 			}
 
 			return new HttpRequest(host, pathString, baseUrl, parameters, method);
@@ -121,10 +128,10 @@ namespace HermesNet
 									response.StatusCode.ToString(),
 									response.Body.Length
 								);
+
 				byte[] headerBytes = Encoding.UTF8.GetBytes(header);
-				byte[] bodyBytes = Encoding.UTF8.GetBytes(response.Body);
 				await stream.WriteAsync(headerBytes, 0, headerBytes.Length);
-				await stream.WriteAsync(bodyBytes, 0, bodyBytes.Length);
+				await stream.WriteAsync(response.Body, 0, response.Body.Length);
 				await stream.FlushAsync();
 			}
 		}

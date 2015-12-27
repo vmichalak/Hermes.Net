@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 
 namespace HermesNet.Models.Http
 {
@@ -9,6 +10,7 @@ namespace HermesNet.Models.Http
 	public class HttpResponse
 	{
 		private HttpStatusCode _statusCode = HttpStatusCode.OK;
+		private byte[] _body;
 
 		/// <summary>
 		/// Return the response end status.
@@ -36,9 +38,9 @@ namespace HermesNet.Models.Http
 		}
 
 		/// <summary>
-		/// Return Json string of the body.
+		/// Return encoded body.
 		/// </summary>
-		public string Body { get; private set; } = "";
+		public byte[] Body => this._body == null ? new byte[] {} : _body;
 
 		/// <summary>
 		/// Send the content to the client.
@@ -46,9 +48,18 @@ namespace HermesNet.Models.Http
 		/// <param name="content"></param>
 		public void Send(string content)
 		{
+			this.Send(Encoding.UTF8.GetBytes(content));
+		}
+
+		/// <summary>
+		/// Send the content to the client.
+		/// </summary>
+		/// <param name="content"></param>
+		public void Send(byte[] content)
+		{
 			if (!Ended)
 			{
-				this.Body = content;
+				this._body = content;
 				this.End();
 			}
 			else
