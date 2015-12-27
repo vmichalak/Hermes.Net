@@ -51,7 +51,7 @@ namespace HermesNet.Helpers
 		{
 			return this._middlewares.FirstOrDefault(m =>
 			{
-				Regex regex = new Regex(m.Key.Route);
+				Regex regex = new Regex("^"+m.Key.Route);
 				return (m.Key.Method == HttpMethod.ALL || m.Key.Method == searchEntry.Method) && regex.IsMatch(searchEntry.Route);
 			}).Value;
 		}

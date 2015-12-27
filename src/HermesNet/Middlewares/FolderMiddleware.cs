@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Net;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Notifications;
 using HermesNet.Models;
 using HermesNet.Models.Http;
 
@@ -40,7 +34,6 @@ namespace HermesNet.Middlewares
 				{
 					url = url.Substring(1);
 				}
-				Debug.WriteLine("fileurl: "+url);
 				StorageFile file = await this._folder.GetFileAsync(url);
 				context.Response.Send(await ReadFile(file));
 			}
@@ -61,13 +54,11 @@ namespace HermesNet.Middlewares
 			using (IRandomAccessStreamWithContentType stream = await file.OpenReadAsync())
 			{
 				stream.Seek((ulong)0);
-				Debug.WriteLine("size: "+stream.Size);
 				fileBytes = new byte[stream.Size];
 				var buffer = Windows.Security.Cryptography.CryptographicBuffer.CreateFromByteArray(fileBytes);
 				IBuffer rd = await stream.ReadAsync(buffer, (uint) fileBytes.Length, InputStreamOptions.None);
 				rd.CopyTo(fileBytes);
 			}
-			Debug.WriteLine(fileBytes);
 			return fileBytes;
 		}
 	}

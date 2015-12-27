@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,11 +63,9 @@ namespace HermesNet
 					dataRead = buffer.Length;
 				}
 			}
-
-			Debug.WriteLine("test 1");
+			
 			HttpRequest request = ConvertInputStringToHttpRequest(requestStringBuilder.ToString(), args.Socket.Information.RemoteAddress.CanonicalName);
 			HttpResponse response = await this._middlewareManager.Execute(request);
-			Debug.WriteLine(response.Body.Length);
 
 			using (IOutputStream output = args.Socket.OutputStream)
 			{
@@ -104,8 +103,8 @@ namespace HermesNet
 							str => str.Split('=')
 						)
 						.ToDictionary(
-							temp => temp[0],
-							temp => new List<string>() {temp[1] ?? ""}
+							temp => WebUtility.UrlDecode(temp[0]),
+							temp => new List<string>() { WebUtility.UrlDecode(temp[1]) ?? ""}
 						);
 				}
 				catch
