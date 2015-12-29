@@ -110,6 +110,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Converters.cs" />
+    <Compile Include="Helpers\HttpUtility.cs" />
     <Compile Include="Helpers\MiddlewareManager.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="Middlewares\FolderMiddleware.cs" />

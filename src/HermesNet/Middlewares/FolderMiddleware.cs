@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -27,17 +26,35 @@ namespace HermesNet.Middlewares
 		{
 			try
 			{
-				Regex regex = new Regex(_routeBase);
+				Regex regex = new Regex("^" + _routeBase);
 				string url = context.Request.BaseUrl;
 				url = regex.Replace(url, @"");
+
+				if (string.IsNullOrWhiteSpace(url))
+				{
+					url = "index.html";
+				}
+
 				if (url[0] == '/')
 				{
 					url = url.Substring(1);
 				}
+				url = url.Replace('/', '\\');
+
+				if (string.IsNullOrWhiteSpace(url))
+				{
+					url = "index.html";
+				}
+
 				StorageFile file = await this._folder.GetFileAsync(url);
 				context.Response.Send(await ReadFile(file));
 			}
 			catch (FileNotFoundException)
+			{
+				context.Response.StatusCode = HttpStatusCode.NotFound;
+				context.Response.End();
+			}
+			catch (ArgumentException)
 			{
 				context.Response.StatusCode = HttpStatusCode.NotFound;
 				context.Response.End();

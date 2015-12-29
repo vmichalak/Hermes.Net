@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,8 +23,6 @@ namespace HermesNet
 		private const uint BufferSize = 8192;
 		private readonly MiddlewareManager _middlewareManager = new MiddlewareManager();
 		private readonly StreamSocketListener _listener = new StreamSocketListener();
-
-		//public void AddMiddleware(IMiddleware middleware) { this._middlewareManager.Add(middleware); }
 
 		public void AddAllRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.ALL, middleware); }
 		public void AddGetRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.GET, middleware); }
@@ -75,8 +74,7 @@ namespace HermesNet
 
 		private HttpRequest ConvertInputStringToHttpRequest(string input, string host)
 		{
-			string[] inputSplitted = input.Split('\n');
-			string[] firstLine = inputSplitted[0].Split(' ');
+			string[] firstLine = input.Split('\n')[0].Split(' ');
 
 			HttpMethod method;
 			try
@@ -90,28 +88,11 @@ namespace HermesNet
 
 			string pathString = firstLine[1];
 			string baseUrl = pathString;
-			Dictionary<string, List<string>> parameters = new Dictionary<string, List<string>>();
-			if (pathString.Contains('?'))
+			if (baseUrl.Contains('?'))
 			{
 				baseUrl = baseUrl.Substring(0, baseUrl.IndexOf('?'));
-				
-				try
-				{
-					string[] parameterStrings = pathString.Substring(pathString.IndexOf('?') + 1).Split('&');
-					parameters = parameterStrings
-						.Select(
-							str => str.Split('=')
-						)
-						.ToDictionary(
-							temp => WebUtility.UrlDecode(temp[0]),
-							temp => new List<string>() { WebUtility.UrlDecode(temp[1]) ?? ""}
-						);
-				}
-				catch
-				{
-					// ignored
-				}
 			}
+			Dictionary<string, string> parameters = Converters.ConvertNameValueCollectionToDictionary(HttpUtility.ParseQueryString(pathString));
 
 			return new HttpRequest(host, pathString, baseUrl, parameters, method);
 		}

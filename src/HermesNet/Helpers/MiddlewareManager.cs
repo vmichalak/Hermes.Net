@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -28,20 +29,32 @@ namespace HermesNet.Helpers
 		{
 			HttpContext context = new HttpContext(request);
 
-			Entry searchEntry = new Entry()
+			try
 			{
-				Method = request.Method,
-				Route = request.BaseUrl
-			};
+				Entry searchEntry = new Entry()
+				{
+					Method = request.Method,
+					Route = request.BaseUrl
+				};
 
-			IMiddleware middleware = FilterMiddlewares(searchEntry);
-			if (middleware == null)
-			{
-				context.Response.StatusCode = HttpStatusCode.NotFound;
+				IMiddleware middleware = FilterMiddlewares(searchEntry);
+				if (middleware == null)
+				{
+					context.Response.StatusCode = HttpStatusCode.NotFound;
+				}
+				else
+				{
+					await middleware.Run(context);
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				await middleware.Run(context);
+#if !DEBUG
+				context.Response.StatusCode = HttpStatusCode.InternalServerError;
+				context.Response.Send("Internal Server Error: " + e.Message);
+#else
+				throw new Exception("Error during MiddlewareManager Execution.", e);
+#endif
 			}
 
 			return context.Response;

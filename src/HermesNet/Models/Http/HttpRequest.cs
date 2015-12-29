@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using HermesNet.Helpers;
 
 namespace HermesNet.Models.Http
 {
@@ -24,14 +27,14 @@ namespace HermesNet.Models.Http
 		/// <summary>
 		/// Gets all request parameters.
 		/// </summary>
-		public IReadOnlyDictionary<string, List<string>> Parameters { get; }
+		public IReadOnlyDictionary<string, string> Parameters { get; }
 
 		/// <summary>
 		/// Gets the HTTP Method used (post, get, options, ...)
 		/// </summary>
 		public HttpMethod Method { get; }
 
-		public HttpRequest(string host, string pathString, string baseUrl, Dictionary<string, List<string>> parameters, HttpMethod method)
+		public HttpRequest(string host, string pathString, string baseUrl, Dictionary<string, string> parameters, HttpMethod method)
 		{
 			if (parameters == null) { throw new ArgumentNullException(nameof(parameters)); }
 			this.BaseUrl = baseUrl;
@@ -39,6 +42,16 @@ namespace HermesNet.Models.Http
 			this.PathString = pathString;
 			this.Parameters = parameters;
 			this.Method = method;
+		}
+
+		/// <summary>
+		/// Check if thepParameter exist and if is not empty.
+		/// </summary>
+		/// <param name="name">Parameter name</param>
+		/// <returns>true if exist, false if don't</returns>
+		public bool ParameterExist(string name)
+		{
+			return Parameters.ContainsKey(name) && !string.IsNullOrWhiteSpace(Parameters[name]);
 		}
 	}
 }
