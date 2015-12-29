@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
@@ -11,6 +12,11 @@ namespace HermesNet.Models.Http
 	{
 		private HttpStatusCode _statusCode = HttpStatusCode.OK;
 		private byte[] _body;
+
+		/// <summary>
+		/// Http Response Headers. Contains all headers of the response.
+		/// </summary>
+		public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>(); 
 
 		/// <summary>
 		/// Return the response end status.

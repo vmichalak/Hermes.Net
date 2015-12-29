@@ -47,6 +47,7 @@ namespace HermesNet.Middlewares
 				}
 
 				StorageFile file = await this._folder.GetFileAsync(url);
+				context.Response.Headers.Add("Content-type", file.ContentType);
 				context.Response.Send(await ReadFile(file));
 			}
 			catch (FileNotFoundException)

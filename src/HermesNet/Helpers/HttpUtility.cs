@@ -31,6 +31,6 @@ namespace HermesNet.Helpers
 			}
 
 			return nvc;
-		} 
+		}
 	}
 }

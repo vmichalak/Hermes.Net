@@ -99,15 +99,15 @@ namespace HermesNet
 		{
 			using (Stream stream = output.AsStreamForWrite())
 			{
-				string header = String.Format("HTTP/1.1 {0} {1}\r\n"
-									+ "Content-Length: {2}\r\n"
-									+ "Connection: close\r\n\r\n",
-									(int)response.StatusCode,
-									response.StatusCode.ToString(),
-									response.Body.Length
-								);
+				StringBuilder headerBuilder = new StringBuilder("HTTP/1.1 ").Append((int) response.StatusCode).Append(" ").Append(response.StatusCode).Append("\r\n");
+				headerBuilder.Append("Content-Length: ").Append(response.Body.Length).Append("\r\n");
+				foreach (KeyValuePair<string, string> header in response.Headers)
+				{
+					headerBuilder.Append(header.Key).Append(": ").Append(header.Value).Append("\r\n");
+				}
+				headerBuilder.Append("Connection: close\r\n\r\n");
 
-				byte[] headerBytes = Encoding.UTF8.GetBytes(header);
+				byte[] headerBytes = Encoding.UTF8.GetBytes(headerBuilder.ToString());
 				await stream.WriteAsync(headerBytes, 0, headerBytes.Length);
 				await stream.WriteAsync(response.Body, 0, response.Body.Length);
 				await stream.FlushAsync();
