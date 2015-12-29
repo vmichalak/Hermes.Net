@@ -27,7 +27,6 @@ namespace HermesNet
 		public void AddPostRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
 		public void AddPutRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
 		public void AddDeleteRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
-
 		public void AddTransparentFolderRoute(string route, StorageFolder folder) { this._middlewareManager.Add(route, HttpMethod.GET, new FolderMiddleware(folder, route)); }
 
 		public async void Listen(int port)

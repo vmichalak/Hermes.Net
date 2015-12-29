@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace HermesNet.Models.Http
 {
@@ -11,7 +12,7 @@ namespace HermesNet.Models.Http
 		/// <summary>
 		/// Gets the client remote IP address.
 		/// </summary>
-		public string Host { get; }
+		public IPAddress Host { get; }
 
 		/// <summary>
 		/// Gets the path String.
@@ -36,8 +37,17 @@ namespace HermesNet.Models.Http
 		public HttpRequest(string host, string pathString, string baseUrl, Dictionary<string, string> parameters, HttpMethod method)
 		{
 			if (parameters == null) { throw new ArgumentNullException(nameof(parameters)); }
+
+			IPAddress finalHost;
+			if (IPAddress.TryParse(host, out finalHost))
+			{
+				this.Host = finalHost;
+			}
+			else
+			{
+				throw new ArgumentException("Host is not a valid IP adress.");
+			}
 			this.BaseUrl = baseUrl;
-			this.Host = host;
 			this.PathString = pathString;
 			this.Parameters = parameters;
 			this.Method = method;
