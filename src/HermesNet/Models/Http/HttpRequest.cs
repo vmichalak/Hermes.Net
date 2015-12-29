@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using HermesNet.Helpers;
 
 namespace HermesNet.Models.Http
 {
@@ -21,7 +18,9 @@ namespace HermesNet.Models.Http
 		/// </summary>
 		public string PathString { get; }
 
-		//TODO: Doc
+		/// <summary>
+		/// Gets the url without parameters.
+		/// </summary>
 		public string BaseUrl { get; }
 
 		/// <summary>
