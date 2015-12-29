@@ -4,7 +4,7 @@ Fast & Minimalist Web Server Framework for Microsoft Universal Platform
 ```cs
 class HelloWorldMiddleware : IMiddleware
 {
-	public Task Run(HttpContext context)
+	public async Task Run(HttpContext context)
 	{
 		context.Response.Send("Hello World");
 	}
@@ -28,7 +28,7 @@ Soon on nuget.
 
 ## People
 
-The current lead maintaine is [Valentin Michalak] (https://github.com/vmichalak)
+The current lead maintainer is [Valentin Michalak] (https://github.com/vmichalak)
 
 ## Licence
 
