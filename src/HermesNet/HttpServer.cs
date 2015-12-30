@@ -75,11 +75,7 @@ namespace HermesNet
 			string[] firstLine = input.Split('\n')[0].Split(' ');
 
 			HttpMethod method;
-			try
-			{
-				method = (HttpMethod) Enum.Parse(typeof (HttpMethod), firstLine[0]);
-			}
-			catch (ArgumentException)
+			if (!Enum.TryParse(firstLine[0], out method))
 			{
 				method = HttpMethod.ALL;
 			}
