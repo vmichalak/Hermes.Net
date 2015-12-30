@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -90,8 +91,9 @@ namespace HermesNet
 				baseUrl = baseUrl.Substring(0, baseUrl.IndexOf('?'));
 			}
 			Dictionary<string, string> parameters = Converters.ConvertNameValueCollectionToDictionary(HttpUtility.ParseQueryString(pathString));
+			string body = input.Split(new string[] {"\r\n\r\n"}, StringSplitOptions.None)[1];
 
-			return new HttpRequest(host, pathString, baseUrl, parameters, method);
+			return new HttpRequest(host, pathString, baseUrl, parameters, method, body);
 		}
 
 		private async Task WriteResponseAsync(HttpResponse response, IOutputStream output)

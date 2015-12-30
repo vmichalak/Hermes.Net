@@ -34,7 +34,12 @@ namespace HermesNet.Models.Http
 		/// </summary>
 		public HttpMethod Method { get; }
 
-		public HttpRequest(string host, string pathString, string baseUrl, Dictionary<string, string> parameters, HttpMethod method)
+		/// <summary>
+		/// Gets the body content of the request. 
+		/// </summary>
+		public string Body { get; }
+
+		public HttpRequest(string host, string pathString, string baseUrl, Dictionary<string, string> parameters, HttpMethod method, string body)
 		{
 			if (parameters == null) { throw new ArgumentNullException(nameof(parameters)); }
 
@@ -51,6 +56,7 @@ namespace HermesNet.Models.Http
 			this.PathString = pathString;
 			this.Parameters = parameters;
 			this.Method = method;
+			this.Body = body;
 		}
 
 		/// <summary>

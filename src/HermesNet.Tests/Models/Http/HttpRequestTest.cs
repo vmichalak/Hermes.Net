@@ -17,7 +17,7 @@ namespace HermesNet.Tests.Models.Http
 		{
 			try
 			{
-				HttpRequest request = new HttpRequest("192.168.1.126", "/", "/", null, HttpMethod.POST);
+				HttpRequest request = new HttpRequest("192.168.1.126", "/", "/", null, HttpMethod.POST, "");
 				Assert.Fail();
 			}
 			catch (ArgumentNullException)
@@ -31,7 +31,7 @@ namespace HermesNet.Tests.Models.Http
 		{
 			try
 			{
-				HttpRequest request = new HttpRequest("abc", "/", "/", new Dictionary<string, string>(), HttpMethod.POST);
+				HttpRequest request = new HttpRequest("abc", "/", "/", new Dictionary<string, string>(), HttpMethod.POST, "");
 				Assert.Fail();
 			}
 			catch (ArgumentException)
@@ -41,7 +41,7 @@ namespace HermesNet.Tests.Models.Http
 
 			try
 			{
-				HttpRequest request = new HttpRequest("192.168.1.7893", "/", "/", new Dictionary<string, string>(), HttpMethod.POST);
+				HttpRequest request = new HttpRequest("192.168.1.7893", "/", "/", new Dictionary<string, string>(), HttpMethod.POST, "");
 				Assert.Fail();
 			}
 			catch (ArgumentException)
@@ -52,7 +52,7 @@ namespace HermesNet.Tests.Models.Http
 		[TestMethod]
 		public void AllGoodTest()
 		{
-			HttpRequest request = new HttpRequest("192.168.1.69", "/say?message=lol", "/say", new Dictionary<string, string> { { "message", "lol" } }, HttpMethod.POST);
+			HttpRequest request = new HttpRequest("192.168.1.69", "/say?message=lol", "/say", new Dictionary<string, string> { { "message", "lol" } }, HttpMethod.POST, "");
 			Assert.AreEqual(IPAddress.Parse("192.168.1.69"), request.Host);
 			Assert.AreEqual("/say?message=lol", request.PathString);
 			Assert.AreEqual(1, request.Parameters.Count);
