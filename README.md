@@ -1,3 +1,4 @@
+![Logo of Hermes.net](http://blog.vmichalak.com/wp-content/uploads/2015/12/banner_article.png)
 # Hermes.Net
 Fast & Minimalist Web Server Framework for Microsoft Universal Platform
 
