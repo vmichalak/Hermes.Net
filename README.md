@@ -19,7 +19,17 @@ server.AddGetRoute("/", new HelloWorldMiddleware());
 server.Listen(port);
 ```
 ## Installation
-Soon on nuget.
+
+To install Hermes.Net, run the following command in the Package Manager Console.
+
+```
+Install-Package HermesNet -Version 0.3.0-beta1 -Pre
+```
+
+In your project you need to activate capabilities :
+
+	* Internet (Client & Server)
+	* Private Networks (Client & Server)
 
 ## Features
 
