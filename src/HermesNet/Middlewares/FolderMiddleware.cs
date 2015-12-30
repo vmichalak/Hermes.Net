@@ -50,12 +50,7 @@ namespace HermesNet.Middlewares
 				context.Response.Headers.Add("Content-type", file.ContentType);
 				context.Response.Send(await ReadFile(file));
 			}
-			catch (FileNotFoundException)
-			{
-				context.Response.StatusCode = HttpStatusCode.NotFound;
-				context.Response.End();
-			}
-			catch (ArgumentException)
+			catch (Exception ex) when (ex is FileNotFoundException || ex is ArgumentException)
 			{
 				context.Response.StatusCode = HttpStatusCode.NotFound;
 				context.Response.End();
