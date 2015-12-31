@@ -24,7 +24,7 @@ server.Listen(port);
 To install Hermes.Net, run the following command in the Package Manager Console.
 
 ```
-Install-Package HermesNet -Version 0.3.0-beta1 -Pre
+Install-Package HermesNet -Pre
 ```
 
 In your project you need to activate capabilities :
