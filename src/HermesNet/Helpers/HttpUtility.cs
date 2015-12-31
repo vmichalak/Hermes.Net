@@ -9,6 +9,11 @@ namespace HermesNet.Helpers
 {
 	internal class HttpUtility
 	{
+		/// <summary>
+		/// Parses a query string into a NameValueCollection.
+		/// </summary>
+		/// <param name="queryString">The query string to parse.</param>
+		/// <returns>A NameValueCollection of query parameters and values.</returns>
 		public static NameValueCollection ParseQueryString(string queryString)
 		{
 			NameValueCollection nvc = new NameValueCollection();

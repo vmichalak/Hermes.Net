@@ -12,6 +12,10 @@ using HermesNet.Models.Http;
 
 namespace HermesNet.Middlewares
 {
+	/// <summary>
+	/// Middleware for AddTransparentFolderRoute.
+	/// This middleware makes available to the public the contents of a folder.
+	/// </summary>
 	internal class FolderMiddleware : IMiddleware
 	{
 		private readonly StorageFolder _folder;
@@ -51,7 +55,7 @@ namespace HermesNet.Middlewares
 		/// Loads the byte data from a StorageFile
 		/// </summary>
 		/// <param name="file">The file to read</param>
-		public async Task<byte[]> ReadFile(StorageFile file)
+		private static async Task<byte[]> ReadFile(IRandomAccessStreamReference file)
 		{
 			using (IRandomAccessStreamWithContentType stream = await file.OpenReadAsync())
 			{
