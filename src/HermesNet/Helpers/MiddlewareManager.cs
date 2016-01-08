@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -61,11 +62,25 @@ namespace HermesNet.Helpers
 
 		private IMiddleware FilterMiddlewares(Entry searchEntry)
 		{
-			return this._middlewares.FirstOrDefault(m =>
+			KeyValuePair<Entry, IMiddleware>[] list = this._middlewares.ToList().FindAll(m =>
 			{
 				Regex regex = new Regex("^"+m.Key.Route);
 				return (m.Key.Method == HttpMethod.ALL || m.Key.Method == searchEntry.Method) && regex.IsMatch(searchEntry.Route);
-			}).Value;
+			}).ToArray();
+
+			int maxRouteSize = list[0].Key.Route.Length;
+			int item = 0;
+
+			for (int i = 1; i < list.Length; i++)
+			{
+				if (list[i].Key.Route.Length > maxRouteSize)
+				{
+					maxRouteSize = list[i].Key.Route.Length;
+					item = i;
+				}
+			}
+
+			return list[item].Value;
 		}
 	}
 }
