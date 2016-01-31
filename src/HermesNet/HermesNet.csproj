@@ -120,6 +120,7 @@
     <Compile Include="Models\Http\HttpRequest.cs" />
     <Compile Include="Models\Http\HttpResponse.cs" />
     <Compile Include="Models\IMiddleware.cs" />
+    <Compile Include="Models\MiddlewareImplementator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\HermesNet.rd.xml" />
   </ItemGroup>

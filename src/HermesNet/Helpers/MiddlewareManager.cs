@@ -26,6 +26,12 @@ namespace HermesNet.Helpers
 			this._middlewares.Add(new Entry() { Method = method, Route = route }, middleware);
 		}
 
+		public void Add(string route, HttpMethod method, Func<HttpContext, Task> middlewareFunc)
+		{
+			if(middlewareFunc == null) { throw new ArgumentNullException(nameof(middlewareFunc)); }
+			this.Add(route, method, new MiddlewareImplementator(middlewareFunc));
+		}
+
 		public async Task<HttpResponse> Execute(HttpRequest request)
 		{
 			if(request == null) { throw new ArgumentNullException(nameof(request)); }
