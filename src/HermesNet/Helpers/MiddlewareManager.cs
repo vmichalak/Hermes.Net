@@ -22,11 +22,13 @@ namespace HermesNet.Helpers
 
 		public void Add(string route, HttpMethod method, IMiddleware middleware)
 		{
+			if (middleware == null) { throw new ArgumentNullException(nameof(middleware)); }
 			this._middlewares.Add(new Entry() { Method = method, Route = route }, middleware);
 		}
 
 		public async Task<HttpResponse> Execute(HttpRequest request)
 		{
+			if(request == null) { throw new ArgumentNullException(nameof(request)); }
 			HttpContext context = new HttpContext(request);
 
 			try
