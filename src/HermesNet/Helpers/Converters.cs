@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace HermesNet.Helpers
@@ -12,6 +13,7 @@ namespace HermesNet.Helpers
 		/// <returns>The converted Dictionary</returns>
 		public static Dictionary<string, string> ConvertNameValueCollectionToDictionary(NameValueCollection source)
 		{
+			if(source == null) { throw new ArgumentNullException(nameof(source)); }
 			Dictionary<string, string> dictionary = new Dictionary<string, string>(source.Count);
 			foreach (string key in source.AllKeys)
 			{

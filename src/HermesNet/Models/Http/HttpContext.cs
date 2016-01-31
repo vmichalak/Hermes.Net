@@ -1,4 +1,6 @@
-﻿namespace HermesNet.Models.Http
+﻿using System;
+
+namespace HermesNet.Models.Http
 {
 	public class HttpContext
 	{
@@ -14,6 +16,7 @@
 
 		public HttpContext(HttpRequest request)
 		{
+			if(request == null) { throw new ArgumentNullException(nameof(request)); }
 			this.Request = request;
 			this.Response = new HttpResponse();
 		}
