@@ -34,7 +34,7 @@ namespace HermesNet
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddAllRoute(string route, Func<HttpContext, Task> middleware) { this._middlewareManager.Add(route, HttpMethod.ALL, middleware); }
+		public void AddAllRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.ALL, middleware); }
 
 		/// <summary>
 		/// Routes HTTP GET requests to the specified path with the specified middleware.
@@ -48,7 +48,7 @@ namespace HermesNet
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddGetRoute(string route, Func<HttpContext, Task> middleware) { this._middlewareManager.Add(route, HttpMethod.GET, middleware); }
+		public void AddGetRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.GET, middleware); }
 
 		/// <summary>
 		/// Routes HTTP POST requests to the specified path with the specified middleware.
@@ -62,7 +62,7 @@ namespace HermesNet
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddPostRoute(string route, Func<HttpContext, Task> middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
+		public void AddPostRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
 
 		/// <summary>
 		/// Routes HTTP PUT requests to the specified path with the specified middleware.
@@ -76,7 +76,7 @@ namespace HermesNet
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddPutRoute(string route, Func<HttpContext, Task> middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
+		public void AddPutRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
 
 		/// <summary>
 		/// Routes HTTP DELETE requests to the specified path with the specified middleware.
@@ -90,7 +90,7 @@ namespace HermesNet
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddDeleteRoute(string route, Func<HttpContext, Task> middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
+		public void AddDeleteRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
 
 		/// <summary>
 		/// Routes HTTP GET requests to the specified path with the specified folder content.
