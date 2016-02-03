@@ -6,16 +6,16 @@ namespace HermesNet.Models
 {
 	internal class MiddlewareImplementator : IMiddleware
 	{
-		private readonly Func<HttpContext, Task> _func;
+		private readonly Action<HttpContext> _action;
 
 		public Task Run(HttpContext context)
 		{
-			return _func.Invoke(context);
+			return Task.Run(() => _action(context));
 		}
 
-		public MiddlewareImplementator(Func<HttpContext, Task> func)
+		public MiddlewareImplementator(Action<HttpContext> action)
 		{
-			_func = func;
+			_action = action;
 		}
 	}
 }
