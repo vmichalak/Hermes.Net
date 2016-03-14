@@ -23,81 +23,93 @@ namespace HermesNet
 		private readonly StreamSocketListener _listener = new StreamSocketListener();
 
 		/// <summary>
-		/// Routes HTTP requests to the specified path with the specified middleware.
+		/// Use a middleware on all requests.
 		/// </summary>
-		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddAllRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.ALL, middleware); }
+		public void Use(IMiddleware middleware) { this._middlewareManager.Add(middleware); }
+
+		/// <summary>
+		/// Use a middleware on all requests.
+		/// </summary>
+		/// <param name="middleware"></param>
+		public void Use(Action<HttpContext> middleware) { this._middlewareManager.Add(middleware); }
 
 		/// <summary>
 		/// Routes HTTP requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddAllRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.ALL, middleware); }
+		public void AddAllRoute(string route, IMiddleware middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.ALL, middleware); }
+
+		/// <summary>
+		/// Routes HTTP requests to the specified path with the specified middleware.
+		/// </summary>
+		/// <param name="route"></param>
+		/// <param name="middleware"></param>
+		public void AddAllRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.ALL, middleware); }
 
 		/// <summary>
 		/// Routes HTTP GET requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddGetRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.GET, middleware); }
+		public void AddGetRoute(string route, IMiddleware middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.GET, middleware); }
 
 		/// <summary>
 		/// Routes HTTP GET requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddGetRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.GET, middleware); }
+		public void AddGetRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.GET, middleware); }
 
 		/// <summary>
 		/// Routes HTTP POST requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddPostRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
+		public void AddPostRoute(string route, IMiddleware middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.POST, middleware); }
 
 		/// <summary>
 		/// Routes HTTP POST requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddPostRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.POST, middleware); }
+		public void AddPostRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.POST, middleware); }
 
 		/// <summary>
 		/// Routes HTTP PUT requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddPutRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
+		public void AddPutRoute(string route, IMiddleware middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.PUT, middleware); }
 
 		/// <summary>
 		/// Routes HTTP PUT requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddPutRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.PUT, middleware); }
+		public void AddPutRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.PUT, middleware); }
 
 		/// <summary>
 		/// Routes HTTP DELETE requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddDeleteRoute(string route, IMiddleware middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
+		public void AddDeleteRoute(string route, IMiddleware middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.DELETE, middleware); }
 
 		/// <summary>
 		/// Routes HTTP DELETE requests to the specified path with the specified middleware.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="middleware"></param>
-		public void AddDeleteRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.Add(route, HttpMethod.DELETE, middleware); }
+		public void AddDeleteRoute(string route, Action<HttpContext> middleware) { this._middlewareManager.AddToRoute(route, HttpMethod.DELETE, middleware); }
 
 		/// <summary>
 		/// Routes HTTP GET requests to the specified path with the specified folder content.
 		/// </summary>
 		/// <param name="route"></param>
 		/// <param name="folder"></param>
-		public void AddTransparentFolderRoute(string route, StorageFolder folder) { this._middlewareManager.Add(route, HttpMethod.GET, new FolderMiddleware(folder, route)); }
+		public void AddTransparentFolderRoute(string route, StorageFolder folder) { this._middlewareManager.AddToRoute(route, HttpMethod.GET, new FolderMiddleware(folder, route)); }
 
 		/// <summary>
 		/// Binds and listens for connections on the specified host and port.

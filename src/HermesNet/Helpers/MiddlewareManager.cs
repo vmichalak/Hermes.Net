@@ -17,18 +17,30 @@ namespace HermesNet.Helpers
 			public string Route { get; set; }
 		}
 
+		private readonly List<IMiddleware> _beforeMiddlewares = new List<IMiddleware>(); 
 		private readonly Dictionary<Entry, IMiddleware> _middlewares = new Dictionary<Entry, IMiddleware>();
 
-		public void Add(string route, HttpMethod method, IMiddleware middleware)
+		public void Add(IMiddleware middleware)
+		{
+			if (middleware == null) { throw new ArgumentNullException(nameof(middleware)); }
+			this._beforeMiddlewares.Add(middleware);
+		}
+
+		public void Add(Action<HttpContext> middlewareAction)
+		{
+			this.Add(new MiddlewareImplementator(middlewareAction));
+		}
+
+		public void AddToRoute(string route, HttpMethod method, IMiddleware middleware)
 		{
 			if (middleware == null) { throw new ArgumentNullException(nameof(middleware)); }
 			this._middlewares.Add(new Entry() { Method = method, Route = route }, middleware);
 		}
 
-		public void Add(string route, HttpMethod method, Action<HttpContext> middlewareAction)
+		public void AddToRoute(string route, HttpMethod method, Action<HttpContext> middlewareAction)
 		{
 			if(middlewareAction == null) { throw new ArgumentNullException(nameof(middlewareAction)); }
-			this.Add(route, method, new MiddlewareImplementator(middlewareAction));
+			this.AddToRoute(route, method, new MiddlewareImplementator(middlewareAction));
 		}
 
 		public async Task<HttpResponse> Execute(HttpRequest request)
@@ -38,6 +50,15 @@ namespace HermesNet.Helpers
 
 			try
 			{
+				foreach (IMiddleware m in _beforeMiddlewares)
+				{
+					await m.Run(context);
+					if (context.Response.Ended)
+					{
+						return context.Response;
+					}
+				}
+
 				Entry searchEntry = new Entry()
 				{
 					Method = request.Method,
